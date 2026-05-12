@@ -193,6 +193,8 @@ def main(args=None) -> int:
     t1 = time()
     if overwrite_error_params:
         cultivation_repetition = args.cultivation_repetition
+        # Fault distance limited by 1e-6 at distance 3 for both
+        cultivation_fault_distance = 3 if args.error_per_cult >= 2e-7 else 5
         distance = args.code_distance
         expected_fidelity = 1 - res.analysis.error_estimate(
             code_distance=distance,
@@ -202,16 +204,15 @@ def main(args=None) -> int:
             num_clifford=other_gates,
         )
     else:
-        cultivation_repetition, distance, gates, expected_fidelity = (
+        cultivation_repetition, distance, gates, expected_fidelity, cultivation_fault_distance = (
             res.analysis.get_important_information(
-                clifford_t_circuit=clifford_t_circuit, pfid=1 - gate_error
+                clifford_t_circuit=clifford_t_circuit, pfid=1 - gate_error, fold_cultiv=fold_cultiv
             )
         )
-        if fold_cultiv:
-            cultivation_repetition = 10  # Based on WORST case in Figure 2a of [Fold-transversal surface code cultivation](https://arxiv.org/pdf/2509.05212)
     t2 = time()
 
     report.cultivation_repetition = cultivation_repetition
+    report.cultivation_fault_distance = cultivation_fault_distance
     report.distance = distance
     report.expected_fidelity = expected_fidelity
     report.qec_time = t2 - t1
@@ -219,10 +220,17 @@ def main(args=None) -> int:
 
     if fold_cultiv:
         arch = STR2ARCH[arch_name](
-            d=distance, cultivation_repetition=cultivation_repetition, fold_cultiv=fold_cultiv
+            d=distance,
+            cultivation_repetition=cultivation_repetition,
+            fold_cultiv=fold_cultiv,
+            cultivation_fault_distance=cultivation_fault_distance,
         )
     else:
-        arch = STR2ARCH[arch_name](d=distance, cultivation_repetition=cultivation_repetition)
+        arch = STR2ARCH[arch_name](
+            d=distance,
+            cultivation_repetition=cultivation_repetition,
+            cultivation_fault_distance=cultivation_fault_distance,
+        )
 
     t1 = time()
     if isinstance(arch, res.architecture.DefaultMovement):
