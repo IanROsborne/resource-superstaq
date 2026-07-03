@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import annotations
-
 import warnings
-from collections import Counter, defaultdict
-from collections.abc import Callable
+import collections
 from functools import partial
 from typing import TYPE_CHECKING, ClassVar, Literal
 
@@ -38,7 +36,9 @@ class ResourceEstimator:
         """Checks that the input circuit contains only valid operations and warns of operations still in progress"""
         unrecognized = [
             op
-            for op in dict(Counter([op_.gate for op_ in circuit.all_operations()])).keys()
+            for op in dict(
+                collections.Counter([op_.gate for op_ in circuit.all_operations()])
+            ).keys()
             if op not in self.arc.primitives
         ]
         if unrecognized:
@@ -52,14 +52,14 @@ class ResourceEstimator:
     ) -> dict[cirq.Gate | str, int]:
         """Counts up the total physical gates from all logical primitives in the input circuit"""
         self.validate_circuit_ops(circuit=circuit)
-        cost = Counter()
+        cost = collections.Counter()
         for op in tqdm(
             circuit.all_operations(),
             total=len(list(circuit.all_operations())),
             colour="cyan",
             disable=not bool(verbose),
         ):
-            cost += Counter(self.arc.gate_cost(op))
+            cost += collections.Counter(self.arc.gate_cost(op))
         if pretty:
             return {
                 obj.__name__ if hasattr(obj, "__name__") else str(obj): val
@@ -121,7 +121,7 @@ class ResourceEstimator:
         self, circuit: cirq.Circuit, verbose: int = 0, pretty: bool = False
     ) -> dict[cirq.Gate | str, int]:
         """Estimation of the physical operations in critical path of the input circuit according to the most expensive operation per moment"""
-        qubit_paths = {qubit: Counter() for qubit in circuit.all_qubits()}
+        qubit_paths = {qubit: collections.Counter() for qubit in circuit.all_qubits()}
         qubit_times = {qubit: 0 for qubit in circuit.all_qubits()}
         total_ops = len(list(circuit.all_operations()))
         for op in tqdm(
@@ -131,7 +131,7 @@ class ResourceEstimator:
             # This qubit currently has the longest path
             big_qubit = max(op_qubits, key=qubit_times.get)
             big_time = qubit_times[big_qubit] + self.arc.op_time(op)
-            big_path = qubit_paths[big_qubit] + Counter(self.arc.moment_cost(op))
+            big_path = qubit_paths[big_qubit] + collections.Counter(self.arc.moment_cost(op))
             for qubit in op_qubits:
                 qubit_paths[qubit] = big_path
                 qubit_times[qubit] = big_time
@@ -154,7 +154,7 @@ class ResourceEstimator:
 
 ReactionDepth = dict[Literal["X", "Z"], int]
 _ReactionDepthState = list[ReactionDepth]
-_ReactionDynamic = Callable[[_ReactionDepthState], _ReactionDepthState]
+_ReactionDynamic = collections.abc.Callable[[_ReactionDepthState], _ReactionDepthState]
 
 
 class ReactionDepthEstimator:
@@ -257,7 +257,9 @@ class ReactionDepthEstimator:
             Per-qubit reaction-depth state keyed by the original circuit qubits.
             Each value contains the current `"X"` and `"Z"` reaction depths.
         """
-        reaction_depth: defaultdict[cirq.Qid, ReactionDepth] = defaultdict(lambda: {"X": 0, "Z": 0})
+        reaction_depth: collections.defaultdict[cirq.Qid, ReactionDepth] = collections.defaultdict(
+            lambda: {"X": 0, "Z": 0}
+        )
 
         for input_op in circuit.all_operations():
             if input_op.gate not in self.factories:
@@ -282,7 +284,7 @@ class ReactionDepthEstimator:
     def _apply_clifford_reaction_depth(
         self,
         input_op: cirq.Operation,
-        reaction_depth: defaultdict[cirq.Qid, ReactionDepth],
+        reaction_depth: collections.defaultdict[cirq.Qid, ReactionDepth],
     ) -> None:
         """Propagate tracked Pauli reaction depths through a Clifford operation.
 
@@ -302,7 +304,9 @@ class ReactionDepthEstimator:
             raise ValueError(non_clifford_message)
 
         old_depths: dict[cirq.Qid, ReactionDepth] = {}
-        new_depths: defaultdict[cirq.Qid, ReactionDepth] = defaultdict(lambda: {"X": 0, "Z": 0})
+        new_depths: collections.defaultdict[cirq.Qid, ReactionDepth] = collections.defaultdict(
+            lambda: {"X": 0, "Z": 0}
+        )
         for qubit in input_op.qubits:
             old_depth = reaction_depth.get(qubit, {"X": 0, "Z": 0})
             if not any(old_depth.values()):

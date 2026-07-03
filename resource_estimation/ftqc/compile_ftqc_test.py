@@ -16,8 +16,8 @@ from collections import Counter
 from math import pi
 
 import cirq
+import cirq_superstaq as css
 import pytest
-from cirq_superstaq import Barrier
 
 import resource_estimation.ftqc.architecture as arch
 import resource_estimation.ftqc.compile_ftqc as comp
@@ -89,7 +89,7 @@ def test_end2end(with_barriers) -> None:
         compiled = comp.ft_compile(test_layout, arc, with_barriers=with_barriers)
         for op in compiled.all_operations():
             is_primitive = False
-            if arc.primitives.validate(op) or op in cirq.GateFamily(Barrier):
+            if arc.primitives.validate(op) or op in cirq.GateFamily(css.Barrier):
                 is_primitive = True
             assert is_primitive
 

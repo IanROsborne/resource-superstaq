@@ -21,13 +21,12 @@ from pathlib import Path
 
 import cirq
 import numpy as np
-from cirq_superstaq.ops.qubit_gates import ParallelRGate
+import cirq_superstaq as css
 
 from resource_estimation.ftqc.compile_ftqc import add_moves
 from resource_estimation.ftqc.distil import distil_15_to_1
 from resource_estimation.ftqc.estimate import ResourceEstimator
 from resource_estimation.ftqc.stim_functions import cultivate
-
 import resource_estimation.ftqc.lattice_surgery_primitives as lsp
 
 NEUTRAL_GATES = {  # From Harvard paper (https://arxiv.org/pdf/2506.20661)
@@ -976,16 +975,16 @@ class Superconductor(DefaultLattice):
 def convert_globals_to_phasedxz(architecture: Architecture, cost_with_globals: dict) -> dict:
     """Converts costs defined by GR and Rz into PhasedXZ by removing GR and replacing Rz with PhasedXZ to represent arbitrary single qubit rotations"""
     gate_cost = cost_with_globals["gate_cost"].copy()
-    if ParallelRGate in gate_cost:
-        del gate_cost[ParallelRGate]
+    if css.ops.qubit_gates.ParallelRGate in gate_cost:
+        del gate_cost[css.ops.qubit_gates.ParallelRGate]
     rz_gates = gate_cost.get(cirq.Rz, 0)
     if rz_gates:
         gate_cost[cirq.PhasedXZGate] = rz_gates
         del gate_cost[cirq.Rz]
 
     moment_cost = cost_with_globals["moment_cost"].copy()
-    if ParallelRGate in moment_cost:
-        del moment_cost[ParallelRGate]
+    if css.ops.qubit_gates.ParallelRGate in moment_cost:
+        del moment_cost[css.ops.qubit_gates.ParallelRGate]
     rz_moments = moment_cost.get(cirq.Rz, 0)
     if rz_moments:
         moment_cost[cirq.PhasedXZGate] = moment_cost.get(cirq.Rz, 0)

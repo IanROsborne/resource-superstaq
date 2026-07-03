@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import annotations
-
 from itertools import chain
 
 import cirq
@@ -21,7 +20,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 import resource_estimation.ftqc.lattice_surgery_primitives as lsp
-
 from .ftqc.layout import Layout
 
 

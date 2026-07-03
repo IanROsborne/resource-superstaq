@@ -19,9 +19,9 @@ from itertools import combinations, product
 from math import ceil, sqrt
 from typing import Literal
 
+import numpy as np
 import cirq
 import networkx as nx
-import numpy as np
 
 
 @dataclass

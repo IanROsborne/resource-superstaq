@@ -14,7 +14,6 @@
 import cirq
 import openfermion
 import numpy as np
-from openfermion.circuits import simulate_trotter
 from openfermion.ops import FermionOperator
 
 
@@ -198,7 +197,9 @@ def kanamori(n_bath, verbose=0):
     qubits = cirq.LineQubit.range(n_qubits)
 
     circuit = cirq.Circuit(
-        simulate_trotter(qubits=qubits, hamiltonian=kanamori_interaction_hamiltonian, time=1)
+        openfermion.circuits.simulate_trotter(
+            qubits=qubits, hamiltonian=kanamori_interaction_hamiltonian, time=1
+        )
     )
 
     circuit = cirq.drop_negligible_operations(circuit)

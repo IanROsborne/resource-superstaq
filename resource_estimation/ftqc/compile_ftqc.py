@@ -11,27 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from __future__ import annotations
-
 from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from resource_estimation.ftqc.architecture import Architecture
 import copy
 import os
 import sys
 from collections.abc import Iterator
-from functools import partial
+import functools
 from math import pi
 from time import time
 from warnings import warn
 
 import cirq
 import cirq_superstaq as css
-from cirq_superstaq import Barrier, barrier
 from tqdm import tqdm
 
+if TYPE_CHECKING:
+    from resource_estimation.ftqc.architecture import Architecture
 from . import lattice_surgery_primitives as lsp
 from .layout import Layout
 
@@ -199,7 +195,7 @@ def handle_idling(
     def _map_func(moment, moment_idx):
         if verbose > 0:
             knock_off_tqdm(moment_idx=moment_idx, total=total, tstart=tstart, message="Idling:")
-        if all(isinstance(gate.gate, (Barrier, lsp.Split)) for gate in moment):
+        if all(isinstance(gate.gate, (css.Barrier, lsp.Split)) for gate in moment):
             return moment
         if moment_idx == 0 or sum(
             isinstance(gate.gate, lsp.SyndromeExtract) for gate in moment
@@ -212,7 +208,7 @@ def handle_idling(
         moment = cirq.Moment(*moment, *se.on_each(*idling_qubits), _flatten_contents=False)
 
         if with_barriers:
-            return [moment, cirq.Moment(barrier(*circuit.all_qubits()))]
+            return [moment, cirq.Moment(css.barrier(*circuit.all_qubits()))]
 
         return moment
 
@@ -257,7 +253,7 @@ def post_op_syndrome_extraction(
 
         yield op
 
-        if with_barriers and not isinstance(op.gate, Barrier):
+        if with_barriers and not isinstance(op.gate, css.Barrier):
             yield barrier
 
         qubits_to_correct = [
@@ -346,9 +342,9 @@ def add_moves(
             if op.gate in zone_ops:
                 zone_type = "interact" if op.gate == cirq.CNOT else "measure"
             move_op = (
-                partial(lsp.Move(zone=zone_type).on)
+                functools.partial(lsp.Move(zone=zone_type).on)
                 if zone_type is None
-                else partial(lsp.Move(zone=zone_type).on_each)
+                else functools.partial(lsp.Move(zone=zone_type).on_each)
             )
             yield move_op(*op_qubits)
             yield op

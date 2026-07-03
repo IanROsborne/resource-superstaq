@@ -12,13 +12,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import argparse
+import textwrap
+from time import time
 
 import cirq
 import cirq_superstaq as css
-from time import time
-import textwrap
 
-import argparse
 import resource_estimation as res
 from resource_estimation.visualizations import C, make_pretty
 from resource_estimation.analysis import STR2ARCH

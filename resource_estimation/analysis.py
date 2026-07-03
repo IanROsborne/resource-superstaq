@@ -12,11 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import annotations
-
-try:
-    from typing import Self
-except ImportError:  # pragma: no cover
-    from typing_extensions import Self
+from collections import Counter
 from collections.abc import Callable
 import json
 import shutil
@@ -24,13 +20,19 @@ from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from functools import partial
 from tqdm import tqdm
-import resource_estimation.ftqc.architecture as arch
-from resource_estimation.visualizations import C, boxed_header
+import warnings
+
+try:
+    from typing import Self
+except ImportError:  # pragma: no cover
+    from typing_extensions import Self
+
 import cirq
-from collections import Counter
 import numpy as np
 import numpy.typing as npt
-import warnings
+
+import resource_estimation.ftqc.architecture as arch
+from resource_estimation.visualizations import C, boxed_header
 
 
 STR2ARCH: dict[str, Callable[..., arch.Architecture]] = {

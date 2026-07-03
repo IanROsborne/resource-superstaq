@@ -15,16 +15,16 @@ import json
 import sys
 from pathlib import Path
 from typing import Literal
+import os
+import cultiv
+
 import cirq
+from tqdm import tqdm
+
+from resource_estimation.ftqc.stim_functions import count_stim_resources, STR2GATE
 
 parent_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(parent_dir))
-import os
-
-import cultiv
-from resource_estimation.ftqc.stim_functions import count_stim_resources, STR2GATE
-from tqdm import tqdm
-
 
 GATE2STR = {v: k for k, v in STR2GATE.items()}
 
