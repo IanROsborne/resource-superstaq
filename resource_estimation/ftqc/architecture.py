@@ -975,16 +975,16 @@ class Superconductor(DefaultLattice):
 def convert_globals_to_phasedxz(architecture: Architecture, cost_with_globals: dict) -> dict:
     """Converts costs defined by GR and Rz into PhasedXZ by removing GR and replacing Rz with PhasedXZ to represent arbitrary single qubit rotations"""
     gate_cost = cost_with_globals["gate_cost"].copy()
-    if css.ops.qubit_gates.ParallelRGate in gate_cost:
-        del gate_cost[css.ops.qubit_gates.ParallelRGate]
+    if css.ParallelRGate in gate_cost:
+        del gate_cost[css.ParallelRGate]
     rz_gates = gate_cost.get(cirq.Rz, 0)
     if rz_gates:
         gate_cost[cirq.PhasedXZGate] = rz_gates
         del gate_cost[cirq.Rz]
 
     moment_cost = cost_with_globals["moment_cost"].copy()
-    if css.ops.qubit_gates.ParallelRGate in moment_cost:
-        del moment_cost[css.ops.qubit_gates.ParallelRGate]
+    if css.ParallelRGate in moment_cost:
+        del moment_cost[css.ParallelRGate]
     rz_moments = moment_cost.get(cirq.Rz, 0)
     if rz_moments:
         moment_cost[cirq.PhasedXZGate] = moment_cost.get(cirq.Rz, 0)

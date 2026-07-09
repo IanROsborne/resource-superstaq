@@ -121,11 +121,9 @@ def zpow_to_rz(
     def _map_fn(
         op: cirq.Operation, _: int
     ) -> (
-        cirq.ops.raw_types.Operation
-        | cirq.ops.pauli_string.SingleQubitPauliStringGateOperation
-        | list[
-            cirq.ops.raw_types.Operation | cirq.ops.pauli_string.SingleQubitPauliStringGateOperation
-        ]
+        cirq.Operation
+        | cirq.SingleQubitPauliStringGateOperation
+        | list[cirq.Operation | cirq.SingleQubitPauliStringGateOperation]
     ):
         if not isinstance(op.gate, cirq.ZPowGate):
             return op

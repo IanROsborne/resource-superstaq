@@ -14,7 +14,7 @@
 # limitations under the License.
 import argparse
 import textwrap
-from time import time
+import time
 
 import cirq
 import cirq_superstaq as css

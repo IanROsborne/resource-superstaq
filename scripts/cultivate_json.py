@@ -19,7 +19,7 @@ import os
 import cultiv
 
 import cirq
-from tqdm import tqdm
+import tqdm
 
 from resource_estimation.ftqc.stim_functions import count_stim_resources, STR2GATE
 

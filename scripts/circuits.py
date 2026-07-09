@@ -14,7 +14,6 @@
 import cirq
 import openfermion
 import numpy as np
-from openfermion.ops import FermionOperator
 
 
 def fermi_hubbard(n, verbose=0):

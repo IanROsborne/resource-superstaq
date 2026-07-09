@@ -15,8 +15,6 @@ import cirq
 import pytest
 import cultiv
 import stim
-from stim import Circuit
-from cirq.circuits.circuit import Circuit
 
 from resource_estimation.ftqc.stim_functions import (
     count_stim_resources,
