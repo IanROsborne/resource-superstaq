@@ -44,7 +44,7 @@ def format_cost_dict(
 
 if __name__ == "__main__":
     resources_dict = {}
-    for d in tqdm(range(3, 26, 2)):
+    for d in tqdm.tqdm(range(3, 26, 2)):
         # Establish official resources as basis
         cnot = cultiv.make_surface_code_cnot(distance=d, basis="Z")
         memory_d_rounds = cultiv.make_surface_code_memory_circuit(dsurface=d, rounds=d, basis="Z")
