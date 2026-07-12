@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import textwrap
-from collections import Counter
+import collections
 from math import pi
 
 import cirq
@@ -256,7 +256,7 @@ def test_other_passes(random_circ) -> None:
     arc = arch.DefaultLattice(idling=True, post_op_correction=True)
     compiled_circuit = comp.ft_compile(lay, arc)
     idling_corrected_resources = dict(
-        Counter(
+        collections.Counter(
             str(op.gate) if op not in cirq.GateFamily(cirq.MeasurementGate) else "Measure"
             for op in compiled_circuit.all_operations()
         )
@@ -264,7 +264,7 @@ def test_other_passes(random_circ) -> None:
     arc = arch.DefaultLattice(idling=False, post_op_correction=True)
     compiled_circuit = comp.ft_compile(lay, arc)
     corrected_resources = dict(
-        Counter(
+        collections.Counter(
             str(op.gate) if op not in cirq.GateFamily(cirq.MeasurementGate) else "Measure"
             for op in compiled_circuit.all_operations()
         )
@@ -272,7 +272,7 @@ def test_other_passes(random_circ) -> None:
     arc = arch.DefaultLattice(idling=False, post_op_correction=False)
     compiled_circuit = comp.ft_compile(lay, arc)
     uncorrected_resources = dict(
-        Counter(
+        collections.Counter(
             str(op.gate) if op not in cirq.GateFamily(cirq.MeasurementGate) else "Measure"
             for op in compiled_circuit.all_operations()
         )

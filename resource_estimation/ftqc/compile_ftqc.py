@@ -19,7 +19,7 @@ import sys
 from collections.abc import Iterator
 import functools
 from math import pi
-from time import time
+import time
 from warnings import warn
 
 import cirq
@@ -49,7 +49,7 @@ def knock_off_tqdm(
         return
     WIDTH = os.get_terminal_size().columns
     moment_idx += 1
-    time_passed = time() - tstart
+    time_passed = time.time() - tstart
     guessed_time = time_passed * (total / moment_idx)
     offset = len(
         f"{message} || {moment_idx} / {total} ["
@@ -188,7 +188,7 @@ def handle_idling(
     # Build circuit where Syndrome Extract is performed on Idling qubits that are not being acted upon
     # Split moments are treated separately because they can always get absorbed into the previous moment
     total = len(circuit)
-    tstart = time()
+    tstart = time.time()
 
     se = lsp.SyndromeExtract(1, rounds)
 
@@ -240,7 +240,7 @@ def post_op_syndrome_extraction(
     barrier = css.barrier(*sorted(circuit.all_qubits()))
 
     total = len(circuit)
-    tstart = time()
+    tstart = time.time()
 
     def _map_func(op: cirq.Operation, moment_idx: int) -> Iterator[cirq.Operation]:
         if verbose:
@@ -324,7 +324,7 @@ def add_moves(
 ) -> cirq.Circuit:
     """Handles replacement moves for both alley movement and interaction zone movement"""
     total = len(circuit)
-    tstart = time()
+    tstart = time.time()
 
     def map_func(op, moment_idx):
         if verbose:

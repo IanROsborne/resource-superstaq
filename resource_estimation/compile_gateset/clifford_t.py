@@ -19,7 +19,7 @@ import numpy as np
 import cirq
 import mpmath
 import pygridsynth
-from tqdm import tqdm
+import tqdm
 
 
 # pygridsynth comes from https://www.mathstat.dal.ca/~selinger/newsynth/
@@ -105,7 +105,7 @@ def compile_cirq_to_clifford_t(
     The eps parameter defines the maximum allowable error in the angle of each synthesized Rz gate
     """
     newcirc = cirq.Circuit()
-    for moment in tqdm(circ.moments, colour="cyan", disable=not verbose):
+    for moment in tqdm.tqdm(circ.moments, colour="cyan", disable=not verbose):
         for op in moment:
             qubits = op.qubits
             gate = op.gate
