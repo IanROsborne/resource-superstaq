@@ -24,26 +24,26 @@ from resource_estimation.ftqc.stim_functions import (
 
 
 @pytest.fixture
-def gidney3() -> Circuit:
+def gidney3() -> cirq.Circuit:
     return cultiv.make_end2end_cultivation_circuit(
         dsurface=7, dcolor=3, basis="Y", r_growing=1, r_end=7, inject_style="unitary"
     )
 
 
 @pytest.fixture
-def gidney5() -> Circuit:
+def gidney5() -> cirq.Circuit:
     return cultiv.make_end2end_cultivation_circuit(
         dsurface=11, dcolor=5, basis="Y", r_growing=1, r_end=11, inject_style="unitary"
     )
 
 
 @pytest.fixture
-def yale3() -> Circuit:
+def yale3() -> cirq.Circuit:
     return cultiv.make_cirq_circuits.make_cirq_circuit(code_distance=7, fault_distance=3)
 
 
 @pytest.fixture
-def yale5() -> Circuit:
+def yale5() -> cirq.Circuit:
     return cultiv.make_cirq_circuits.make_cirq_circuit(code_distance=11, fault_distance=5)
 
 
