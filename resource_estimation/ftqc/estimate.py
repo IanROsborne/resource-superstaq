@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import annotations
+from typing import TYPE_CHECKING, ClassVar, Literal
 import warnings
 import collections
-from functools import partial
-from typing import TYPE_CHECKING, ClassVar, Literal
+import functools
 
 import cirq
-from tqdm import tqdm
+import tqdm
 
 if TYPE_CHECKING:
     from resource_estimation.ftqc.architecture import Architecture
@@ -53,7 +53,7 @@ class ResourceEstimator:
         """Counts up the total physical gates from all logical primitives in the input circuit"""
         self.validate_circuit_ops(circuit=circuit)
         cost = collections.Counter()
-        for op in tqdm(
+        for op in tqdm.tqdm(
             circuit.all_operations(),
             total=len(list(circuit.all_operations())),
             colour="cyan",
@@ -78,7 +78,7 @@ class ResourceEstimator:
         """Estimation of the critical path in the input circuit according to the most expensive operation per moment"""
         qubit_times = {qubit: 0 for qubit in circuit.all_qubits()}
         total_ops = len(list(circuit.all_operations()))
-        for op in tqdm(
+        for op in tqdm.tqdm(
             circuit.all_operations(), disable=not verbose, total=total_ops, colour="cyan"
         ):
             big_time = max(qubit_times[q] for q in op.qubits)
@@ -97,7 +97,7 @@ class ResourceEstimator:
         qubit_paths = {qubit: [] for qubit in circuit.all_qubits()}
         qubit_times = {qubit: 0 for qubit in circuit.all_qubits()}
         total_ops = len(list(circuit.all_operations()))
-        for op in tqdm(
+        for op in tqdm.tqdm(
             circuit.all_operations(),
             disable=not verbose,
             total=total_ops,
@@ -124,7 +124,7 @@ class ResourceEstimator:
         qubit_paths = {qubit: collections.Counter() for qubit in circuit.all_qubits()}
         qubit_times = {qubit: 0 for qubit in circuit.all_qubits()}
         total_ops = len(list(circuit.all_operations()))
-        for op in tqdm(
+        for op in tqdm.tqdm(
             circuit.all_operations(), disable=not verbose, total=total_ops, colour="cyan"
         ):
             op_qubits = op.qubits
@@ -207,8 +207,8 @@ class ReactionDepthEstimator:
         return [{"Z": max(old_depth.get("X", 0) + 1, old_depth.get("Z", 0))}]
 
     _FACTORY_REACTION_DYNAMICS: ClassVar[dict[tuple[cirq.Gate, bool], _ReactionDynamic]] = {
-        (cirq.T, True): partial(_t_reaction_dynamic.__func__, auto_corrected=True),
-        (cirq.T, False): partial(_t_reaction_dynamic.__func__, auto_corrected=False),
+        (cirq.T, True): functools.partial(_t_reaction_dynamic.__func__, auto_corrected=True),
+        (cirq.T, False): functools.partial(_t_reaction_dynamic.__func__, auto_corrected=False),
         (cirq.S, False): _s_reaction_dynamic.__func__,
     }
 

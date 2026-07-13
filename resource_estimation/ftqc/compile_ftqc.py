@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 import copy
 import os
 import sys
-from collections.abc import Iterator
+import collections
 import functools
 from math import pi
 import time
@@ -242,7 +242,7 @@ def post_op_syndrome_extraction(
     total = len(circuit)
     tstart = time.time()
 
-    def _map_func(op: cirq.Operation, moment_idx: int) -> Iterator[cirq.Operation]:
+    def _map_func(op: cirq.Operation, moment_idx: int) -> collections.Iterator[cirq.Operation]:
         if verbose:
             knock_off_tqdm(
                 moment_idx=moment_idx,

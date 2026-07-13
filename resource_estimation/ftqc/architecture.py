@@ -14,7 +14,7 @@
 from __future__ import annotations
 import abc
 import json
-import collections 
+import collections
 from functools import cached_property, lru_cache
 from math import ceil
 from pathlib import Path
@@ -618,7 +618,9 @@ class DefaultMovement(Architecture):
     def cnot_cost(self, op: cirq.Operation) -> dict[str, dict[type[cirq.Gate], int] | float]:
         return self._cnot_cost
 
-    def syndrome_extract_cost(self, op: cirq.Operation) -> dict[str, dict[type[cirq.Gate], int] | float]:
+    def syndrome_extract_cost(
+        self, op: cirq.Operation
+    ) -> dict[str, dict[type[cirq.Gate], int] | float]:
         # Build from the base cost of Syndrome Extraction by adding movement penalties CZ and Measurement moments
         base_cost = super().syndrome_extract_cost(op).copy()
         moment_cost = base_cost["moment_cost"]
@@ -676,12 +678,16 @@ class DefaultMovement(Architecture):
             cirq.PhasedXZGate: self.d,
             cirq.QubitPermutationGate: 2,
         }
-        gate_cost = collections.Counter(gates_from_syndrome) + collections.Counter(gates_from_middle_fold)
+        gate_cost = collections.Counter(gates_from_syndrome) + collections.Counter(
+            gates_from_middle_fold
+        )
 
         # Add the half-cycle fold to the Syndrome Extract moment cost
         moments_from_syndrome = se_cost["moment_cost"]
         moments_from_middle_fold = {cirq.CZ: 1, cirq.PhasedXZGate: 1, cirq.QubitPermutationGate: 2}
-        moment_cost = collections.Counter(moments_from_syndrome) + collections.Counter(moments_from_middle_fold)
+        moment_cost = collections.Counter(moments_from_syndrome) + collections.Counter(
+            moments_from_middle_fold
+        )
         op_time = self.total_time(moment_cost_dict=moment_cost)
         return {"op_time": op_time, "gate_cost": gate_cost, "moment_cost": moment_cost}
 
@@ -867,7 +873,9 @@ class MeasureZonesOnly(DefaultMovement):
     #       b) Cultivate S with "inplace" procedure (Class must inherit from Lattice)
     # For now, I am going with option a), which is the same as DefaultMovement
 
-    def syndrome_extract_cost(self, op: cirq.Operation) -> dict[str, dict[type[cirq.Gate], int] | float]:
+    def syndrome_extract_cost(
+        self, op: cirq.Operation
+    ) -> dict[str, dict[type[cirq.Gate], int] | float]:
         """Uses lattice surgery Syndrome Extraction but adds moves associated with the measurements.
         Since this class is a Movement architecture, its rounds should be low, in accordance with the promise of correlated decoding.
         """

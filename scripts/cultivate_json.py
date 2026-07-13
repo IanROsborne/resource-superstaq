@@ -14,7 +14,7 @@
 import json
 import sys
 from pathlib import Path
-from typing import Literal
+import typing
 import os
 import cultiv
 
@@ -30,8 +30,8 @@ GATE2STR = {v: k for k, v in STR2GATE.items()}
 
 
 def format_cost_dict(
-    cost_dict: dict[Literal["serial", "parallel"], dict[cirq.Gate, int]],
-) -> dict[Literal["serial", "parallel"], dict[str, int]]:
+    cost_dict: dict[typing.Literal["serial", "parallel"], dict[cirq.Gate, int]],
+) -> dict[typing.Literal["serial", "parallel"], dict[str, int]]:
     """
     Converts cost dictionaries from `count_stim_resources` from cirq gate to string format
     """
