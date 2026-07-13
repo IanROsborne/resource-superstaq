@@ -60,7 +60,7 @@ class Layout(abc.ABC):
         self._available_t_factories = collections.deque()
         self._available_s_factories = collections.deque()
         self._available_ccz_factories = collections.deque()
-
+        
     def reload_factories(self, ftype: typing.Literal["t", "s", "ccz"]) -> None:
         if ftype not in ["t", "s", "ccz"]:
             raise ValueError(f"{ftype} is not a valid factory type")

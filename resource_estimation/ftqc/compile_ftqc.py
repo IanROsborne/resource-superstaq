@@ -25,7 +25,7 @@ from warnings import warn
 
 import cirq
 import cirq_superstaq as css
-from tqdm import tqdm
+import tqdm
 
 if TYPE_CHECKING:
     from resource_estimation.ftqc.architecture import Architecture
@@ -302,7 +302,7 @@ def validate_ops(circuit: cirq.Circuit, verbose: int = 1):
     total_ops = len(list(circuit.all_operations()))
     if not all(
         op.gate in valid_gates or isinstance(op.gate, valid_types)
-        for op in tqdm(circuit.all_operations(), total=total_ops, disable=not verbose)
+        for op in tqdm.tqdm(circuit.all_operations(), total=total_ops, disable=not verbose)
     ):
         raise ValueError("This compiler only handles Clifford + T + CCZ circuits")
 
